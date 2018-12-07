@@ -11,7 +11,7 @@ app.get("/outlook", async (req, res) => {
   const isAvailable2 = await outlookService.accountNameIsAvailable(
     "mathias.johansson"
   );
-  const message = `Names available mathiasjohansson: ${isAvailable1} mathias.johansson: ${isAvailable2} is available`;
+  const message = `Names available mathiasjohansson: ${isAvailable1} mathias.johansson: ${isAvailable2}`;
   console.log(message);
   console.log("--------------------------");
 
