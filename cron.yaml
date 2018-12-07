@@ -1,4 +1,4 @@
 cron:
 - description: "Check outlook"
   url: /outlook
-  schedule: every 1 minutes
+  schedule: every 1 mins
