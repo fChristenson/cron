@@ -1,42 +1,26 @@
 const express = require("express");
-const { outlookService, mailgunService } = require("./lib/services");
+const { outlookService, outlookEmailService } = require("./lib/services");
 const app = express();
 
 app.use(express.json());
 
 app.get("/outlook", async (req, res) => {
-  const isAvailable1 = await outlookService.accountNameIsAvailable(
-    "mathiasjohansson"
-  );
-  const isAvailable2 = await outlookService.accountNameIsAvailable(
-    "mathias.johansson"
-  );
-  const message = `Names available mathiasjohansson: ${isAvailable1} mathias.johansson: ${isAvailable2}`;
+  const name1 = outlookService.name1;
+  const name2 = outlookService.name2;
+  const isAvailable1 = await outlookService.accountNameIsAvailable(name1);
+  const isAvailable2 = await outlookService.accountNameIsAvailable(name2);
+  const message = `Names available ${name1}: ${isAvailable1} ${name2}: ${isAvailable2}`;
   console.log(message);
   console.log("--------------------------");
 
   const isMonday = new Date().getDay() === 1;
 
   if (isAvailable1 || isAvailable2) {
-    await mailgunService.sendEmail(
-      "johansson.mathias@outlook.com",
-      "Name is available",
-      message
-    );
+    await outlookEmailService.sendNameAvailableEmail();
   } else if (isMonday) {
-    console.log("Sending monday email");
-    console.log("--------------------------");
-    await mailgunService.sendEmail(
-      "fredrik.christenson@gmail.com",
-      "The name check is still running",
-      "The check for the outlook names mathiasjohansson & mathias.johansson is still running"
-    );
-    await mailgunService.sendEmail(
-      "johansson.mathias@outlook.com",
-      "The name check is still running",
-      "The check for the outlook names mathiasjohansson & mathias.johansson is still running"
-    );
+    await outlookEmailService.sendEmailReminder();
   }
+
   res.end();
 });
 
