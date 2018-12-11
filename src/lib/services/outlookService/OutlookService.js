@@ -13,7 +13,9 @@ class OutlookService {
   }
 
   async accountNameIsAvailable(name) {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox"]
+    });
     const page = await browser.newPage();
     await page.goto("https://signup.live.com/signup");
     const selector = "#MemberName";
