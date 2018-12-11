@@ -16,9 +16,9 @@ app.get("/outlook", async (req, res) => {
   const isMonday = new Date().getDay() === 1;
 
   if (isAvailable1 || isAvailable2) {
-    await outlookEmailService.sendNameAvailableEmail();
+    await outlookEmailService.sendNameAvailableEmail(message);
   } else if (isMonday) {
-    await outlookEmailService.sendEmailReminder();
+    await outlookEmailService.sendEmailReminder(message);
   }
 
   res.end();
