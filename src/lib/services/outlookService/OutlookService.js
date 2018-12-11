@@ -7,11 +7,6 @@ class OutlookService {
     this.name2 = "mathias.johansson";
   }
 
-  async getHeaders() {
-    const res = await fetch("https://signup.live.com/");
-    return res.headers;
-  }
-
   async accountNameIsAvailable(name) {
     const browser = await puppeteer.launch({
       args: ["--no-sandbox"]
