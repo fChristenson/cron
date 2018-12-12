@@ -1,4 +1,3 @@
-const fetch = require("node-fetch");
 const puppeteer = require("puppeteer");
 
 class OutlookService {
@@ -8,9 +7,7 @@ class OutlookService {
   }
 
   async accountNameIsAvailable(name) {
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox"]
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto("https://signup.live.com/signup");
     const selector = "#MemberName";
