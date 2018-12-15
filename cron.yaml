@@ -2,3 +2,7 @@ cron:
 - description: "Check outlook"
   url: /outlook
   schedule: every 24 hours
+
+- description: "Get comics"
+  url: /comics
+  schedule: every 24 hours 12:00

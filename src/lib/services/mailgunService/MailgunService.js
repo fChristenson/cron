@@ -16,6 +16,17 @@ class MailgunService {
 
     return client.messages().send(data);
   }
+
+  sendHtmlEmail(to, subject, html) {
+    const data = {
+      from: `Fidde <noreply@${config.mailgun.domain}>`,
+      to,
+      subject,
+      html
+    };
+
+    return client.messages().send(data);
+  }
 }
 
 module.exports = MailgunService;

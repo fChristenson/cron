@@ -1,8 +1,17 @@
 const express = require("express");
-const { outlookService, outlookEmailService } = require("./lib/services");
+const {
+  outlookService,
+  outlookEmailService,
+  comicService
+} = require("./lib/services");
 const app = express();
 
 app.use(express.json());
+
+app.get("/comics", async (req, res) => {
+  await comicService.sendComicEmail();
+  res.end();
+});
 
 app.get("/outlook", async (req, res) => {
   const name1 = outlookService.name1;
