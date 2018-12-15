@@ -1,9 +1,10 @@
 const puppeteer = require("puppeteer");
+const config = require("../../../config/config");
 
 class OutlookService {
   constructor() {
-    this.name1 = "mathiasjohansson";
-    this.name2 = "mathias.johansson";
+    this.name1 = config.outlook.name1;
+    this.name2 = config.outlook.name2;
   }
 
   async accountNameIsAvailable(name) {
