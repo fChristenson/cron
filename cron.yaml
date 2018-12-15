@@ -5,4 +5,4 @@ cron:
 
 - description: "Get comics"
   url: /comics
-  schedule: every 24 hours 12:00
+  schedule: every day 12:00
