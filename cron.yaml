@@ -9,4 +9,4 @@ cron:
 
 - description: "Get programming questions"
   url: /questions
-  schedule: every sunday 12:00
+  schedule: every sunday 20:00
