@@ -7,6 +7,8 @@ class OutlookEmailService {
   }
 
   async sendNameAvailableEmail(message) {
+    console.log("sendNameAvailableEmail", message);
+    console.log("--------------------------");
     return this.mailgunService.sendEmail(
       config.emails.mathiasJohansson,
       "Name is available",
@@ -15,7 +17,7 @@ class OutlookEmailService {
   }
 
   async sendEmailReminder(message) {
-    console.log("Sending Monday email");
+    console.log("sendEmailReminder", message);
     console.log("--------------------------");
     const reminderSubject = "The name check is still running";
 
