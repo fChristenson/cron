@@ -1,0 +1,15 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cron-job
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cron-job
+            image: alpine
+            command: ["wget", "http://cron-svc/jobs?region=se&title=utvecklare"]
+          restartPolicy: Never

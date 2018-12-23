@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: gcr.io/cloud-marketplace/google/grafana@sha256:c5fc987953bf24ae87509a27346b5ff0fb07cfe4d7704b5f9e67037a6b68ec31
+        ports:
+        - containerPort: 3000

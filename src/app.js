@@ -73,8 +73,6 @@ app.get("/jobs", async (req, res) => {
 
 app.get("/metrics", (req, res) => {
   res.set("Content-Type", Prometheus.register.contentType);
-  console.log("/metrics done");
-  console.log("--------------------------");
   res.end(Prometheus.register.metrics());
 });
 

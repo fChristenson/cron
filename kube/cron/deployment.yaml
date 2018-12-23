@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cron
+  labels:
+    app: cron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cron
+  template:
+    metadata:
+      labels:
+        app: cron
+    spec:
+      containers:
+      - name: cron
+        image: gcr.io/cron-224817/cron@sha256:819b48d5619a9633b492ca176ab10cc48a4370fc3312a227048037c2477243c8
+        ports:
+        - containerPort: 3000

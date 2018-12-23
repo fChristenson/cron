@@ -24,11 +24,6 @@ class IndeedService {
       const results = await this._getResults(page);
       await browser.close();
       const stats = this.jobStatisticsService.createStatsObject(results);
-
-      if (process.env.NODE_ENV === "production") {
-        await this.jobStatisticsService.saveRecord(region, title, stats);
-      }
-
       this.jobStatisticsService.storeSpaReferences(region, title, stats);
       return stats;
     } catch (error) {
