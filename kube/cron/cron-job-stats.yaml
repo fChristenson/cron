@@ -1,0 +1,21 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cron-job-stats
+spec:
+  schedule: "* */2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: cron-job-se
+            image: alpine
+            command: ["wget", "http://cron-svc/jobs?region=se&title=utvecklare"]
+          - name: cron-job-us
+            image: alpine
+            command: ["wget", "http://cron-svc/jobs?region=us&title=developer"]
+          - name: cron-job-in
+            image: alpine
+            command: ["wget", "http://cron-svc/jobs?region=in&title=developer"]

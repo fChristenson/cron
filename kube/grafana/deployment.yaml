@@ -14,8 +14,18 @@ spec:
       labels:
         app: grafana
     spec:
+      securityContext:
+        runAsUser: 0
+        fsGroup: 0
       containers:
       - name: grafana
         image: gcr.io/cloud-marketplace/google/grafana@sha256:c5fc987953bf24ae87509a27346b5ff0fb07cfe4d7704b5f9e67037a6b68ec31
         ports:
-        - containerPort: 3000
+          - containerPort: 3000
+        volumeMounts:
+          - mountPath: /var/lib/grafana
+            name: data-volume
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: cron-storage-claim

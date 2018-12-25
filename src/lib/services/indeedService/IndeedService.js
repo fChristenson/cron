@@ -24,7 +24,7 @@ class IndeedService {
       const results = await this._getResults(page);
       await browser.close();
       const stats = this.jobStatisticsService.createStatsObject(results);
-      this.jobStatisticsService.storeSpaReferences(region, title, stats);
+      this.jobStatisticsService.storeToolReferences(region, title, stats);
       return stats;
     } catch (error) {
       console.log(error.message);

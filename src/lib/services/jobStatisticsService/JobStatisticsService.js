@@ -1,37 +1,25 @@
-const config = require("../../../config/config");
 const client = require("prom-client");
+const tools = require("./tools");
 
-const reactGauge = new client.Gauge({
-  name: "react_reference_gauge",
-  help: "react_references",
-  labelNames: ["region", "title"]
-});
-const vueGauge = new client.Gauge({
-  name: "vue_reference_gauge",
-  help: "vue_references",
-  labelNames: ["region", "title"]
-});
-const angularGauge = new client.Gauge({
-  name: "angular_reference_gauge",
-  help: "angular_references",
-  labelNames: ["region", "title"]
+const toolGauge = new client.Gauge({
+  name: "tool_reference_gauge",
+  help: "tool_references",
+  labelNames: ["region", "title", "tool"]
 });
 
 class JobStatisticsService {
-  constructor() {
-    this.key = config.gcp.dataStore.jobStatsKey;
-  }
-
-  storeSpaReferences(region, title, stats) {
-    console.log("storeSpaReferences", region, title);
+  storeToolReferences(region, title, stats) {
+    console.log("storeToolReferences", region, title);
     console.log("--------------------------");
     const labels = {
       region,
       title
     };
-    vueGauge.set(labels, stats.vue || 0);
-    reactGauge.set(labels, stats.react || 0);
-    angularGauge.set(labels, stats.angular || 0);
+
+    tools.forEach(name => {
+      const toolLabels = Object.assign({}, labels, { tool: name });
+      toolGauge.set(toolLabels, stats[name] || 0);
+    });
   }
 
   getKeywords(descriptionText) {
