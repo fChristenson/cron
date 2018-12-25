@@ -1,12 +1,1 @@
 cron:
-- description: "Check outlook"
-  url: /outlook
-  schedule: every day 8:00
-
-- description: "Get comics"
-  url: /comics
-  schedule: every day 12:00
-
-- description: "Get programming questions"
-  url: /questions
-  schedule: every sunday 20:00

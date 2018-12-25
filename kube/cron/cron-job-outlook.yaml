@@ -1,0 +1,15 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cron-job-outlook
+spec:
+  schedule: "0 7 * * */1"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: cron-job-outlook
+            image: alpine
+            command: ["wget", "http://cron-svc/outlook"]

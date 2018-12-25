@@ -1,0 +1,15 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cron-job-comics
+spec:
+  schedule: "0 11 * * */1"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: cron-job-comics
+            image: alpine
+            command: ["wget", "http://cron-svc/comics"]
