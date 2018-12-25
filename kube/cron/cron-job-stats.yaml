@@ -19,6 +19,6 @@ spec:
           - name: cron-job-in
             image: alpine
             command: ["wget", "http://cron-svc/jobs?region=in&title=developer"]
-          - name: cron-job-in
+          - name: cron-job-uk
             image: alpine
             command: ["wget", "http://cron-svc/jobs?region=uk&title=developer"]
