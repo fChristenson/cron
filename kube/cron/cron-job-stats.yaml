@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: cron-job-stats
 spec:
-  schedule: "* */2 * * *"
+  schedule: "0 */2 * * *"
   jobTemplate:
     spec:
       template:
@@ -19,3 +19,6 @@ spec:
           - name: cron-job-in
             image: alpine
             command: ["wget", "http://cron-svc/jobs?region=in&title=developer"]
+          - name: cron-job-in
+            image: alpine
+            command: ["wget", "http://cron-svc/jobs?region=uk&title=developer"]
