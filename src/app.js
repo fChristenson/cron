@@ -1,5 +1,6 @@
 const express = require("express");
 const Prometheus = require("prom-client");
+const logger = require("./lib/logging/logger");
 const config = require("./config/config");
 const {
   outlookService,
@@ -19,8 +20,7 @@ app.get("/ping", async (req, res) => {
 
 app.get("/comics", async (req, res) => {
   await comicService.sendComicEmail();
-  console.log("/comics done");
-  console.log("--------------------------");
+  logger.info("/comics done");
   res.end();
 });
 
@@ -33,8 +33,7 @@ app.get("/questions", async (req, res) => {
     message
   );
 
-  console.log("/quetions done");
-  console.log("--------------------------");
+  logger.info("/quetions done");
   res.end();
 });
 
@@ -46,8 +45,7 @@ app.get("/outlook", async (req, res) => {
   const message = `Names available ${name1}: ${isAvailable1} ${name2}: ${isAvailable2}`;
   const isMonday = new Date().getDay() === 1;
 
-  console.log(message);
-  console.log("--------------------------");
+  logger.info(message);
 
   if (isAvailable1 || isAvailable2) {
     await outlookEmailService.sendNameAvailableEmail(message);
@@ -57,8 +55,7 @@ app.get("/outlook", async (req, res) => {
     await outlookEmailService.sendEmailReminder(message);
   }
 
-  console.log("/outlook done");
-  console.log("--------------------------");
+  logger.info("/outlook done");
   res.end();
 });
 
@@ -66,8 +63,7 @@ app.get("/jobs", async (req, res) => {
   const region = req.query.region || "se";
   const title = req.query.title || "programmer";
   await indeedService.getJobPostings(region, title);
-  console.log("/jobs done");
-  console.log("--------------------------");
+  logger.info("/jobs done");
   res.end();
 });
 

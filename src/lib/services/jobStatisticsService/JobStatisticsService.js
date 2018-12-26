@@ -1,5 +1,6 @@
 const client = require("prom-client");
 const tools = require("./tools");
+const logger = require("../../logging/logger");
 
 const toolGauge = new client.Gauge({
   name: "tool_reference_gauge",
@@ -9,8 +10,7 @@ const toolGauge = new client.Gauge({
 
 class JobStatisticsService {
   storeToolReferences(region, title, stats) {
-    console.log("storeToolReferences", region, title);
-    console.log("--------------------------");
+    logger.info("storeToolReferences", region, title);
     const labels = {
       region,
       title
@@ -27,7 +27,11 @@ class JobStatisticsService {
       .split(/\s|\n|\t|\/|;|,|\.|\r|\(|\)|\[|\]|\?|'|"|:|!|[0-9]/)
       .filter(str => !!str)
       .map(str => str.trim().toLowerCase())
-      .filter((val, index, self) => self.indexOf(val) === index);
+      .filter(this._uniq);
+  }
+
+  _uniq(str, index, self) {
+    return self.indexOf(str) === index;
   }
 
   createStatsObject(keywordsArray) {

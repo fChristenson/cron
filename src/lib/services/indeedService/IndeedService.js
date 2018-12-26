@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const config = require("../../../config/config");
+const logger = require("../../logging/logger");
 
 class IndeedService {
   constructor(jobStatisticsService) {
@@ -7,8 +8,7 @@ class IndeedService {
   }
 
   async getJobPostings(region, title) {
-    console.log("getJobPostings", region, title);
-    console.log("--------------------------");
+    logger.info("getJobPostings", region, title);
     const browser = await puppeteer.launch({
       defaultViewport: {
         width: 1920,
@@ -19,42 +19,49 @@ class IndeedService {
     const page = await browser.newPage();
     try {
       await page.goto(this._getUrl(region, title));
-      console.log(`Visitied: ${this._getUrl(region, title)}`);
-      console.log("--------------------------");
-      const results = await this._getResults(page);
+      logger.info(`Visitied: ${this._getUrl(region, title)}`);
+      const results = await this._getResults(page, region);
       await browser.close();
-      const stats = this.jobStatisticsService.createStatsObject(results);
-      this.jobStatisticsService.storeToolReferences(region, title, stats);
-      return stats;
+      const keywordStats = this.jobStatisticsService.createStatsObject(
+        results.keywords
+      );
+      //this.jobStatisticsService.storeToolReferences(region, title, keywordStats);
+      return {
+        keywordStats
+      };
     } catch (error) {
-      console.log(error.message);
-      console.log("--------------------------");
+      logger.error(error.message);
       return [];
     }
   }
 
-  async _getResults(page) {
+  async _getResults(page, region) {
     const selector =
       ".jobsearch-SerpJobCard, .row, .result, .clickcard, .vjs-highlight";
     const posts = await page.$$(selector);
-    let results = [];
+    let keywords = [];
+
     for (const post of posts) {
       await post.click();
       await page.waitFor(1000);
-      const references = await this._getToolReferences(page);
-      results = results.concat(references);
+      const descriptionText = await this._getDescriptionText(page);
+      const pageKeywords = this.jobStatisticsService.getKeywords(
+        descriptionText
+      );
+      keywords = keywords.concat(pageKeywords);
     }
 
-    return results;
+    return {
+      keywords
+    };
   }
 
-  async _getToolReferences(page) {
+  async _getDescriptionText(page) {
     const selector = "#vjs-desc";
-    await page.waitFor(selector);
+    await page.waitFor(selector, { timeout: 60000 });
     const descElement = await page.$(selector);
     const textContent = await descElement.getProperty("textContent");
-    const json = await textContent.jsonValue();
-    return this.jobStatisticsService.getKeywords(json);
+    return await textContent.jsonValue();
   }
 
   _getUrl(region, title) {

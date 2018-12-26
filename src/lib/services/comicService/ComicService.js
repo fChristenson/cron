@@ -1,4 +1,5 @@
 const config = require("../../../config/config");
+const logger = require("../../logging/logger");
 
 class ComicService {
   constructor(mailgunService, dilberService, comitStripService) {
@@ -8,21 +9,17 @@ class ComicService {
   }
 
   async sendComicEmail() {
-    console.log("sendComicEmail");
-    console.log("--------------------------");
+    logger.info("sendComicEmail");
     const promises = [
       this.dilberService.getComicImageUrl(),
       this.comitStripService.getComicImageUrl()
     ];
 
     const urls = await Promise.all(promises);
-    console.log(`Resolved ${urls.length} comic urls`);
-    console.log("--------------------------");
     const imgTags = urls.filter(val => !!val).map(url => `<img src="${url}"/>`);
     const html = `<html>${imgTags}</html>`;
 
-    console.log(`Sending html: ${html}`);
-    console.log("--------------------------");
+    logger.info(`Sending html: ${html}`);
     return this.mailgunService.sendHtmlEmail(
       config.emails.fredrikChristenson,
       "Comics",

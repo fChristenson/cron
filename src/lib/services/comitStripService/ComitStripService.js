@@ -1,9 +1,9 @@
 const puppeteer = require("puppeteer");
+const logger = require("../../logging/logger");
 
 class ComitStripService {
   async getComicImageUrl() {
-    console.log("getComicImageUrl");
-    console.log("--------------------------");
+    logger.info("getComicImageUrl");
     const browser = await puppeteer.launch({
       args: ["--no-sandbox"]
     });
@@ -12,15 +12,13 @@ class ComitStripService {
     const dateUrl = dateString.replace(/-/g, "/");
     try {
       await page.goto(`http://www.commitstrip.com/en/${dateUrl}`);
-      console.log(`Visitied: http://www.commitstrip.com/en/${dateUrl}`);
-      console.log("--------------------------");
+      logger.info(`Visitied: http://www.commitstrip.com/en/${dateUrl}`);
       await this._clickFirstSectionAnchor(page);
       const text = await this._getFirstImageUrl(page);
       await browser.close();
       return text;
     } catch (error) {
-      console.log(error.stack);
-      console.log("--------------------------");
+      logger.error(error.stack);
       return "";
     }
   }

@@ -1,4 +1,5 @@
 const config = require("../../../config/config");
+const logger = require("../../logging/logger");
 
 class OutlookEmailService {
   constructor(mailgunService, outlookService) {
@@ -7,8 +8,7 @@ class OutlookEmailService {
   }
 
   async sendNameAvailableEmail(message) {
-    console.log("sendNameAvailableEmail", message);
-    console.log("--------------------------");
+    logger.info("sendNameAvailableEmail", message);
     return this.mailgunService.sendEmail(
       config.emails.mathiasJohansson,
       "Name is available",
@@ -17,8 +17,7 @@ class OutlookEmailService {
   }
 
   async sendEmailReminder(message) {
-    console.log("sendEmailReminder", message);
-    console.log("--------------------------");
+    logger.info("sendEmailReminder", message);
     const reminderSubject = "The name check is still running";
 
     await this.mailgunService.sendEmail(

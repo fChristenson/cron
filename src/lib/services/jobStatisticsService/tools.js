@@ -1,4 +1,12 @@
-const spaFrameworks = ["react", "angular", "vue", "ember", "preact", "meteor"];
+const spaFrameworks = [
+  "react",
+  "angular",
+  "vue",
+  "ember",
+  "preact",
+  "meteor",
+  "elm"
+];
 
 const languages = [
   "java",
@@ -6,7 +14,16 @@ const languages = [
   "python",
   "golang",
   "javascript",
+  "php",
+  "node",
+  "ruby",
+  "f#",
+  "ocaml",
+  "closure",
+  "haskell",
   "c++",
+  "r",
+  "scala",
   "swift",
   "rust",
   "elixir",
