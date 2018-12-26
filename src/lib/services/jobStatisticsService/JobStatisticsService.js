@@ -1,5 +1,5 @@
 const client = require("prom-client");
-const tools = require("./tools");
+const keywords = require("./keywords");
 const logger = require("../../logging/logger");
 
 const toolGauge = new client.Gauge({
@@ -16,22 +16,18 @@ class JobStatisticsService {
       title
     };
 
-    tools.forEach(name => {
+    Object.keys(stats).forEach(name => {
       const toolLabels = Object.assign({}, labels, { tool: name });
       toolGauge.set(toolLabels, stats[name] || 0);
     });
+
+    return stats;
   }
 
   getKeywords(descriptionText) {
-    return descriptionText
-      .split(/\s|\n|\t|\/|;|,|\.|\r|\(|\)|\[|\]|\?|'|"|:|!|[0-9]/)
-      .filter(str => !!str)
-      .map(str => str.trim().toLowerCase())
-      .filter(this._uniq);
-  }
-
-  _uniq(str, index, self) {
-    return self.indexOf(str) === index;
+    return keywords
+      .filter(keyword => keyword.regex.test(descriptionText))
+      .map(keyword => keyword.name);
   }
 
   createStatsObject(keywordsArray) {

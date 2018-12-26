@@ -20,16 +20,16 @@ class IndeedService {
     try {
       await page.goto(this._getUrl(region, title));
       logger.info(`Visitied: ${this._getUrl(region, title)}`);
-      const results = await this._getResults(page, region);
+      const results = await this._getResults(page);
       await browser.close();
       const keywordStats = this.jobStatisticsService.createStatsObject(
         results.keywords
       );
-      this.jobStatisticsService.storeToolReferences(
+      /*this.jobStatisticsService.storeToolReferences(
         region,
         title,
         keywordStats
-      );
+      );*/
       return {
         keywordStats
       };
@@ -39,20 +39,23 @@ class IndeedService {
     }
   }
 
-  async _getResults(page, region) {
-    const selector =
-      ".jobsearch-SerpJobCard, .row, .result, .clickcard, .vjs-highlight";
-    const posts = await page.$$(selector);
+  async _getResults(page) {
+    const jobLinks = await this._getJobLinks(page);
     let keywords = [];
 
-    for (const post of posts) {
-      await post.click();
-      await page.waitFor(1000);
-      const descriptionText = await this._getDescriptionText(page);
-      const pageKeywords = this.jobStatisticsService.getKeywords(
-        descriptionText
-      );
-      keywords = keywords.concat(pageKeywords);
+    for (const link of jobLinks) {
+      try {
+        await page.goto(link);
+        logger.info(`Visited: ${link}`);
+        const descriptionText = await this._getDescriptionText(page);
+        const pageKeywords = this.jobStatisticsService.getKeywords(
+          descriptionText
+        );
+        logger.info(`Found keywords: ${pageKeywords}`);
+        keywords = keywords.concat(pageKeywords);
+      } catch (e) {
+        logger.error(e.message);
+      }
     }
 
     return {
@@ -60,9 +63,23 @@ class IndeedService {
     };
   }
 
+  async _getJobLinks(page) {
+    const selector = "[data-tn-element=jobTitle]";
+    await page.waitFor(selector);
+    const jobLinks = await page.$$(selector);
+    const links = [];
+
+    for (const link of jobLinks) {
+      const href = await link.getProperty("href");
+      const url = await href.jsonValue();
+      links.push(url);
+    }
+
+    return links;
+  }
+
   async _getDescriptionText(page) {
-    const selector = "#vjs-desc";
-    await page.waitFor(selector, { timeout: 60000 });
+    const selector = ".jobsearch-JobComponent-description";
     const descElement = await page.$(selector);
     const textContent = await descElement.getProperty("textContent");
     return await textContent.jsonValue();
