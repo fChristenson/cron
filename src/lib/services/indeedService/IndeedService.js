@@ -25,7 +25,11 @@ class IndeedService {
       const keywordStats = this.jobStatisticsService.createStatsObject(
         results.keywords
       );
-      //this.jobStatisticsService.storeToolReferences(region, title, keywordStats);
+      this.jobStatisticsService.storeToolReferences(
+        region,
+        title,
+        keywordStats
+      );
       return {
         keywordStats
       };
