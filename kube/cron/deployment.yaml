@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: cron
-        image: gcr.io/cron-224817/cron@sha256:f08c814191ccd9d7690bc345601263dd27c82689cda4a16ec319a849d3779e45
+        image: gcr.io/cron-224817/cron@sha256:bd530515410c5ef936ad8644e724f51a9a0b426e453df625d6a7f56d258ec51c
         ports:
         - containerPort: 3000
