@@ -5,9 +5,9 @@ metadata:
 data:
   prometheus.yaml: |
     global:
-      scrape_interval: 1m
+      scrape_interval: 15m
       scrape_timeout: 10s
-      evaluation_interval: 1m
+      evaluation_interval: 15m
     scrape_configs:
         - job_name: cron
           metrics_path: /metrics
