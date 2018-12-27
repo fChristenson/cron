@@ -1,7 +1,7 @@
 const Keyword = (name, regex) => {
   return {
     name,
-    regex: !regex ? new RegExp(`\\b${escapeRegExp(name)}\\b`, "i") : regex
+    regex: !regex ? new RegExp(escapeRegExp(name), "i") : regex
   };
 };
 
@@ -21,8 +21,8 @@ const spaFrameworks = [
 
 const databases = [
   Keyword("oracle"),
-  Keyword("ms sql", /\b((ms|microsoft)-sql|(ms|microsoft) sql)|mssql\b/),
-  Keyword("ms access", /\b(ms|microsoft) access|(ms|microsoft)-access\b/),
+  Keyword("ms sql", /((ms|microsoft)-sql|(ms|microsoft) sql)|mssql/i),
+  Keyword("ms access", /(ms|microsoft) access|(ms|microsoft)-access/i),
   Keyword("mysql"),
   Keyword("neo4j"),
   Keyword("redis"),
@@ -37,8 +37,8 @@ const databases = [
 ];
 
 const languages = [
-  Keyword("java"),
-  Keyword("c#", /c#|\.net/),
+  Keyword("java", /\bjava\b/i),
+  Keyword("c#", /c#|\.net/i),
   Keyword("python"),
   Keyword("golang"),
   Keyword("javascript"),
@@ -50,14 +50,14 @@ const languages = [
   Keyword("closure"),
   Keyword("haskell"),
   Keyword("c++"),
-  Keyword("c", /[\s\/,]c[\s\/,]/),
-  Keyword("r", /[\s\/,]r[\s\/,]/),
+  Keyword("c", /[\s\/,]c[\s\/,]/i),
+  Keyword("r", /[\s\/,]r[\s\/,]/i),
   Keyword("scala"),
   Keyword("swift"),
   Keyword("rust"),
   Keyword("elixir"),
   Keyword("erlang"),
-  Keyword("objective-c", /\bobjective-c|objective c\b/),
+  Keyword("objective-c", /objective-c|objective c/i),
   Keyword("kotlin")
 ];
 
