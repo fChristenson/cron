@@ -45,7 +45,7 @@ const languages = [
   Keyword("php"),
   Keyword("node"),
   Keyword("ruby"),
-  Keyword("f#", /f#/),
+  Keyword("f#", /f#/i),
   Keyword("ocaml"),
   Keyword("closure"),
   Keyword("haskell"),
