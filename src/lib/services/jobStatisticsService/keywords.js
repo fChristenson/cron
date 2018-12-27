@@ -38,7 +38,7 @@ const databases = [
 
 const languages = [
   Keyword("java"),
-  Keyword("c#", /c#|\b\.net\b/),
+  Keyword("c#", /c#|\.net/),
   Keyword("python"),
   Keyword("golang"),
   Keyword("javascript"),
