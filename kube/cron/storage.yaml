@@ -8,7 +8,7 @@ spec:
   persistentVolumeReclaimPolicy: Delete
   storageClassName: manual
   capacity:
-    storage: 20Gi
+    storage: 500Gi
   accessModes:
     - ReadWriteOnce
   gcePersistentDisk:
