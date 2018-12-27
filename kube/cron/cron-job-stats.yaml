@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: cron-job-stats
 spec:
-  schedule: "*/30 * * * *"
+  schedule: "0 */1 * * *"
   jobTemplate:
     spec:
       template:
