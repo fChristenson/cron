@@ -52,7 +52,7 @@ const languages = [
   Keyword("c++"),
   Keyword("c", /[\s\/,]c[\s\/,]/i),
   Keyword("r", /[\s\/,]r[\s\/,]/i),
-  Keyword("scala"),
+  Keyword("scala", /\bscala\b/i),
   Keyword("swift"),
   Keyword("rust"),
   Keyword("elixir"),
