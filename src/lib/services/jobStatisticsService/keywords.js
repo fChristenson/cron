@@ -1,12 +1,8 @@
 const Keyword = (name, regex) => {
   return {
     name,
-    regex: !regex ? new RegExp(`\\b${escapeRegExp(name)}\\b`, "i") : regex
+    regex: !regex ? new RegExp(`\\b${name}\\b`, "i") : regex
   };
-};
-
-const escapeRegExp = string => {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 };
 
 const spaFrameworks = [
