@@ -1,7 +1,7 @@
 const Keyword = (name, regex) => {
   return {
     name,
-    regex: !regex ? new RegExp(escapeRegExp(name), "i") : regex
+    regex: !regex ? new RegExp(`\\b${escapeRegExp(name)}\\b`, "i") : regex
   };
 };
 
@@ -37,7 +37,7 @@ const databases = [
 ];
 
 const languages = [
-  Keyword("java", /\bjava\b/i),
+  Keyword("java"),
   Keyword("c#", /c#|\.net/i),
   Keyword("python"),
   Keyword("golang"),
@@ -49,15 +49,15 @@ const languages = [
   Keyword("ocaml"),
   Keyword("closure"),
   Keyword("haskell"),
-  Keyword("c++"),
+  Keyword("c++", /c\+\+/i),
   Keyword("c", /[\s\/,]c[\s\/,]/i),
   Keyword("r", /[\s\/,]r[\s\/,]/i),
-  Keyword("scala", /\bscala\b/i),
+  Keyword("scala"),
   Keyword("swift"),
   Keyword("rust"),
   Keyword("elixir"),
   Keyword("erlang"),
-  Keyword("objective-c", /objective-c|objective c/i),
+  Keyword("objective-c", /\bobjective-c|objective c\b/i),
   Keyword("kotlin")
 ];
 
