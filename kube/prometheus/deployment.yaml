@@ -20,7 +20,7 @@ spec:
       containers:
         - name: prometheus
           image: gcr.io/cloud-marketplace/google/prometheus@sha256:f8d1d865b322be20ee34ca3ee61b012bcdbe8235ee57bc7596b6b63d33a90d8c
-          command: [ "prometheus", "--config.file=/config/prometheus.yaml" ]
+          command: [ "prometheus", "--config.file=/config/prometheus.yaml", "--storage.tsdb.retention=1y" ]
           ports:
             - containerPort: 9090
           volumeMounts:
