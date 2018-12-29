@@ -35,7 +35,7 @@ class IndeedService {
       };
     } catch (error) {
       logger.error(error.message);
-      return [];
+      return {};
     }
   }
 
