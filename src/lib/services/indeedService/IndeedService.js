@@ -25,13 +25,22 @@ class IndeedService {
       const keywordStats = this.jobStatisticsService.createStatsObject(
         results.keywords
       );
+      const yearsOfExperienceStats = this.jobStatisticsService.createStatsObject(
+        results.yearsOfExperience
+      );
       this.jobStatisticsService.storeToolReferences(
         region,
         title,
         keywordStats
       );
+      this.jobStatisticsService.storeYearsOfExperienceReferences(
+        region,
+        title,
+        yearsOfExperienceStats
+      );
       return {
-        keywordStats
+        keywordStats,
+        yearsOfExperienceStats
       };
     } catch (error) {
       logger.error(error.message);
@@ -42,6 +51,7 @@ class IndeedService {
   async _getResults(page) {
     const jobLinks = await this._getJobLinks(page);
     let keywords = [];
+    let yearsOfExperience = [];
 
     for (const link of jobLinks) {
       try {
@@ -53,13 +63,20 @@ class IndeedService {
         );
         logger.info(`Found keywords: ${pageKeywords}`);
         keywords = keywords.concat(pageKeywords);
+
+        const pageYears = this.jobStatisticsService.getYearsOfExperience(
+          descriptionText
+        );
+        logger.info(`Found years of experience: ${pageYears}`);
+        yearsOfExperience = yearsOfExperience.concat(pageYears);
       } catch (e) {
         logger.error(e.message);
       }
     }
 
     return {
-      keywords
+      keywords,
+      yearsOfExperience
     };
   }
 
