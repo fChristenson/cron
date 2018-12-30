@@ -25,8 +25,6 @@ class JobStatisticsService {
     const regex4 = `${this.experience}.*?(\\d+\\+?\\s?${this.years})`;
     const result = new RegExp(`${regex1}|${regex2}|${regex3}|${regex4}`);
     this.yearsOfExperienceRegex = result;
-    console.log(this.yearsOfExperienceRegex);
-    console.log("--------------------------");
     this._expandRange = this._expandRange.bind(this);
   }
 
