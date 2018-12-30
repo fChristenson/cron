@@ -43,7 +43,7 @@ class IndeedService {
         yearsOfExperienceStats
       };
     } catch (error) {
-      logger.error(error.message);
+      logger.error(error.stack);
       return {};
     }
   }
@@ -70,7 +70,7 @@ class IndeedService {
         logger.info(`Found years of experience: ${pageYears}`);
         yearsOfExperience = yearsOfExperience.concat(pageYears);
       } catch (e) {
-        logger.error(e.message);
+        logger.error(e.stack);
       }
     }
 

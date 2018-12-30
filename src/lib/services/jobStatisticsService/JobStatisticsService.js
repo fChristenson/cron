@@ -16,15 +16,18 @@ const yearsOfExperienceGauge = new client.Gauge({
 
 class JobStatisticsService {
   constructor() {
-    const to = "(to|-|till)";
-    const experience = "(experience|erfarenhet)";
-    const years = "(years?|års?)";
-    const regex1 = `([\\d+\\.,]+\\s?${to}[\\d+\\.,]*\\s*${years}).*?${experience}`;
-    const regex2 = `(\\d+\\+?\\s?${years}).*?${experience}`;
-    const regex3 = `${experience}.*([\\d+\\.,]+\\s?${to}[\\d+\\.,]*\\s*${years})`;
-    const regex4 = `${experience}.*?(\\d+\\+?\\s?${years})`;
+    this.to = "(to|-|till)";
+    this.experience = "(experience|erfarenhet)";
+    this.years = "(years?|års?)";
+    const regex1 = `([\\d+\\.,]+\\s?${this.to}[\\d+\\.,]*\\s*${this.years}).*?${this.experience}`;
+    const regex2 = `(\\d+\\+?\\s?${this.years}).*?${this.experience}`;
+    const regex3 = `${this.experience}.*([\\d+\\.,]+\\s?${this.to}[\\d+\\.,]*\\s*${this.years})`;
+    const regex4 = `${this.experience}.*?(\\d+\\+?\\s?${this.years})`;
     const result = new RegExp(`${regex1}|${regex2}|${regex3}|${regex4}`);
     this.yearsOfExperienceRegex = result;
+    console.log(this.yearsOfExperienceRegex);
+    console.log("--------------------------");
+    this._expandRange = this._expandRange.bind(this);
   }
 
   storeYearsOfExperienceReferences(region, title, stats) {
@@ -68,7 +71,7 @@ class JobStatisticsService {
     const result = matches
       .slice(1, matches.length)
       .filter(val => val && /\d/.test(val))
-      .map(val => val.replace(/years?|års?|\+/ig, ""))
+      .map(val => val.replace(new RegExp(`${this.years}|\\+`, "ig"), ""))
       .map(val => val.trim())
       .map(this._expandRange)
       .reduce((acc, val) => acc.concat(val), []);
@@ -77,10 +80,10 @@ class JobStatisticsService {
   }
 
   _expandRange(val) {
-    if (/-|to/i.test(val) === false) return val;
+    if (new RegExp(this.to, "i").test(val) === false) return val;
 
     const range = val
-      .split(/to|-/i)
+      .split(new RegExp(this.to, "i"))
       .map(val => val.trim())
       .map(val => parseInt(val));
 

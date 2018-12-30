@@ -18,7 +18,7 @@ class DilbertService {
       await browser.close();
       return text;
     } catch (error) {
-      logger.error(error.message);
+      logger.error(error.stack);
       return "";
     }
   }
