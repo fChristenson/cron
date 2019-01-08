@@ -44,6 +44,7 @@ class GithubService {
       }
 
       if (label === "popularity") {
+        githubStatsGauge.set({ owner, repo, stat: "issues" }, data.issues);
         githubStatsGauge.set({ owner, repo, stat: "stars" }, data.stars);
         githubStatsGauge.set({ owner, repo, stat: "forks" }, data.forks);
         githubStatsGauge.set({ owner, repo, stat: "watchers" }, data.watchers);
@@ -82,6 +83,7 @@ class GithubService {
         label: "popularity",
         repo,
         owner,
+        issues: res.data.open_issues_count,
         stars: res.data.stargazers_count,
         forks: res.data.forks_count,
         watchers: res.data.watchers_count

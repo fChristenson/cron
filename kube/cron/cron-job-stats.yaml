@@ -10,6 +10,9 @@ spec:
         spec:
           restartPolicy: Never
           containers:
+          - name: cron-job-github
+            image: alpine
+            command: ["wget", "http://cron-svc/github"]
           - name: cron-job-se
             image: alpine
             command: ["wget", "http://cron-svc/jobs?region=se&title=utvecklare"]
