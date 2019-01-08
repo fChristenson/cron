@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/datastore": "2.0.0",
+    "axios": "0.18.0",
     "bunyan": "1.8.12",
     "express": "4.16.4",
     "mailgun-js": "0.22.0",

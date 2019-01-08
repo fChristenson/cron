@@ -6,6 +6,7 @@ const {
   outlookService,
   questionService,
   mailgunService,
+  githubService,
   outlookEmailService,
   indeedService,
   comicService
@@ -64,6 +65,12 @@ app.get("/jobs", async (req, res) => {
   const title = req.query.title || "programmer";
   await indeedService.getJobPostings(region, title);
   logger.info("/jobs done");
+  res.end();
+});
+
+app.get("/github", async (req, res) => {
+  await githubService.getStats();
+  logger.info("/github done");
   res.end();
 });
 

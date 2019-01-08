@@ -8,6 +8,7 @@ const QuoraDigestService = require("./quoraDigestService/QuoraDigestService");
 const QuestionService = require("./questionService/QuestionService");
 const IndeedService = require("./indeedService/IndeedService");
 const JobStatisticsService = require("./jobStatisticsService/JobStatisticsService");
+const GithubService = require("./githubService/GithubService");
 
 const jobStatisticsService = new JobStatisticsService();
 const indeedService = new IndeedService(jobStatisticsService);
@@ -26,8 +27,10 @@ const outlookEmailService = new OutlookEmailService(
   mailgunService,
   outlookService
 );
+const githubService = new GithubService();
 
 module.exports = {
+  githubService,
   jobStatisticsService,
   indeedService,
   quoraDigestService,
