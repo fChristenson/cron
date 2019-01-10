@@ -9,6 +9,7 @@ const QuestionService = require("./questionService/QuestionService");
 const IndeedService = require("./indeedService/IndeedService");
 const JobStatisticsService = require("./jobStatisticsService/JobStatisticsService");
 const GithubService = require("./githubService/GithubService");
+const GoogleTrendService = require("./googleTrendService/GoogleTrendService");
 
 const jobStatisticsService = new JobStatisticsService();
 const indeedService = new IndeedService(jobStatisticsService);
@@ -28,9 +29,11 @@ const outlookEmailService = new OutlookEmailService(
   outlookService
 );
 const githubService = new GithubService();
+const googleTrendService = new GoogleTrendService();
 
 module.exports = {
   githubService,
+  googleTrendService,
   jobStatisticsService,
   indeedService,
   quoraDigestService,

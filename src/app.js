@@ -6,6 +6,7 @@ const {
   outlookService,
   questionService,
   mailgunService,
+  googleTrendService,
   githubService,
   outlookEmailService,
   indeedService,
@@ -71,6 +72,12 @@ app.get("/jobs", async (req, res) => {
 app.get("/github", async (req, res) => {
   await githubService.getStats();
   logger.info("/github done");
+  res.end();
+});
+
+app.get("/google-trends", async (req, res) => {
+  await googleTrendService.getTrends();
+  logger.info("/google-trends done");
   res.end();
 });
 
