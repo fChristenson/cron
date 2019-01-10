@@ -3,8 +3,8 @@ const logger = require("../../logging/logger");
 const client = require("prom-client");
 
 const googleTrendGauge = new client.Gauge({
-  name: "github_trend_gauge",
-  help: "github_trend_gauge",
+  name: "google_trend_gauge",
+  help: "google_trend_gauge",
   labelNames: ["group", "keyword"]
 });
 
