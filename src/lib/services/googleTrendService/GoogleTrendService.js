@@ -16,7 +16,8 @@ class GoogleTrendService {
       this.getLowLevelTrend(),
       this.getJobLanguagesTrend(),
       this.getSpaTrend(),
-      this.getCoolLanguagesTrend()
+      this.getCoolLanguagesTrend(),
+      this.getProgrammingStyleTrend()
     ];
 
     const trends = await Promise.all(promises);
@@ -24,7 +25,8 @@ class GoogleTrendService {
       lowLevelTrend,
       jobLanguagesTrend,
       spaTrend,
-      coolLanguagesTrend
+      coolLanguagesTrend,
+      programmingStyleTrend
     ] = trends;
 
     lowLevelTrend.forEach(record =>
@@ -55,7 +57,31 @@ class GoogleTrendService {
       );
     });
 
+    programmingStyleTrend.forEach(record => {
+      googleTrendGauge.set(
+        { group: "programming_style_trend", keyword: record.label },
+        record.value
+      );
+    });
+
     return trends;
+  }
+
+  async getProgrammingStyleTrend() {
+    logger.info("getProgrammingStyleTrend");
+    try {
+      const res = await axios.get(
+        "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=%2Fm%2F05prj,%2Fm%2F02ykw,%2Fm%2F05yd5"
+      );
+      const values = this._parseResponse(res.data);
+      return [
+        { label: "object_oriented_programming", value: values[0] },
+        { label: "functional_programming", value: values[1] },
+        { label: "procedural_programming", value: values[2] }
+      ];
+    } catch (error) {
+      logger.error(error.stack);
+    }
   }
 
   async getLowLevelTrend() {
