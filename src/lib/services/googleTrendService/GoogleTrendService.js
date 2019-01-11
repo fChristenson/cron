@@ -15,11 +15,17 @@ class GoogleTrendService {
     const promises = [
       this.getLowLevelTrend(),
       this.getJobLanguagesTrend(),
-      this.getSpaTrend()
+      this.getSpaTrend(),
+      this.getCoolLanguagesTrend()
     ];
 
     const trends = await Promise.all(promises);
-    const [lowLevelTrend, jobLanguagesTrend, spaTrend] = trends;
+    const [
+      lowLevelTrend,
+      jobLanguagesTrend,
+      spaTrend,
+      coolLanguagesTrend
+    ] = trends;
 
     lowLevelTrend.forEach(record =>
       googleTrendGauge.set(
@@ -41,6 +47,13 @@ class GoogleTrendService {
         record.value
       )
     );
+
+    coolLanguagesTrend.forEach(record => {
+      googleTrendGauge.set(
+        { group: "cool_languages_trend", keyword: record.label },
+        record.value
+      );
+    });
 
     return trends;
   }
@@ -76,6 +89,24 @@ class GoogleTrendService {
         { label: "python", value: values[2] },
         { label: "php", value: values[3] },
         { label: "javascript", value: values[4] }
+      ];
+    } catch (error) {
+      logger.error(error.stack);
+    }
+  }
+
+  async getCoolLanguagesTrend() {
+    logger.info("getCoolLanguagesTrend");
+    try {
+      const res = await axios.get(
+        "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=%2Fm%2F09gbxjr,%2Fm%2F0dsbpg6,%2Fm%2F0bbxf89,%2Fm%2F0pl075p"
+      );
+      const values = this._parseResponse(res.data);
+      return [
+        { label: "golang", value: values[0] },
+        { label: "rust", value: values[1] },
+        { label: "node", value: values[2] },
+        { label: "elixir", value: values[3] }
       ];
     } catch (error) {
       logger.error(error.stack);
