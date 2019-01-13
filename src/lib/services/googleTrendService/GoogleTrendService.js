@@ -1,4 +1,4 @@
-const axios = require("axios");
+const puppeteer = require("puppeteer");
 const logger = require("../../logging/logger");
 const client = require("prom-client");
 
@@ -12,22 +12,18 @@ class GoogleTrendService {
   async getTrends() {
     logger.info("getTrends");
 
-    const promises = [
-      this.getLowLevelTrend(),
-      this.getJobLanguagesTrend(),
-      this.getSpaTrend(),
-      this.getCoolLanguagesTrend(),
-      this.getProgrammingStyleTrend()
-    ];
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox"]
+    });
+    const page = await browser.newPage();
 
-    const trends = await Promise.all(promises);
-    const [
-      lowLevelTrend,
-      jobLanguagesTrend,
-      spaTrend,
-      coolLanguagesTrend,
-      programmingStyleTrend
-    ] = trends;
+    const lowLevelTrend = await this.getLowLevelTrend(page);
+    const jobLanguagesTrend = await this.getJobLanguagesTrend(page);
+    const spaTrend = await this.getSpaTrend(page);
+    const coolLanguagesTrend = await this.getCoolLanguagesTrend(page);
+    const programmingStyleTrend = await this.getProgrammingStyleTrend(page);
+
+    await browser.close();
 
     lowLevelTrend.forEach(record =>
       googleTrendGauge.set(
@@ -67,92 +63,87 @@ class GoogleTrendService {
     return trends;
   }
 
-  async getProgrammingStyleTrend() {
+  async getProgrammingStyleTrend(page) {
     logger.info("getProgrammingStyleTrend");
-    try {
-      const res = await axios.get(
-        "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=%2Fm%2F05prj,%2Fm%2F02ykw,%2Fm%2F05yd5"
-      );
-      const values = this._parseResponse(res.data);
-      return [
-        { label: "object_oriented_programming", value: values[0] },
-        { label: "functional_programming", value: values[1] },
-        { label: "procedural_programming", value: values[2] }
-      ];
-    } catch (error) {
-      logger.error(error.stack);
-    }
+    const values = await this._makeRequest(
+      page,
+      "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=%2Fm%2F05prj,%2Fm%2F02ykw,%2Fm%2F05yd5"
+    );
+    return [
+      { label: "object_oriented_programming", value: values[0] },
+      { label: "functional_programming", value: values[1] },
+      { label: "procedural_programming", value: values[2] }
+    ];
   }
 
-  async getLowLevelTrend() {
+  async getLowLevelTrend(page) {
     logger.info("getLowLevelTrend");
-    try {
-      const res = await axios.get(
-        "https://trends.google.com/trends/api/widgetdata/multiline?hl=sv&tz=-60&req=%7B%22time%22:%222018-12-10+2019-01-10%22,%22resolution%22:%22DAY%22,%22locale%22:%22sv%22,%22comparisonItem%22:%5B%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F09gbxjr%22%7D%5D%7D%7D,%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F0dsbpg6%22%7D%5D%7D%7D,%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F0jgqg%22%7D%5D%7D%7D,%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F01t6b%22%7D%5D%7D%7D%5D,%22requestOptions%22:%7B%22property%22:%22%22,%22backend%22:%22IZG%22,%22category%22:31%7D%7D&token=APP6_UEAAAAAXDjcH7S5of__LwJWlf1BDSpref961egh&tz=-60"
-      );
-      const values = this._parseResponse(res.data);
-      return [
-        { label: "golang", value: values[0] },
-        { label: "rust", value: values[1] },
-        { label: "c++", value: values[2] },
-        { label: "c", value: values[3] }
-      ];
-    } catch (error) {
-      logger.error(error.stack);
-    }
+    const values = await this._makeRequest(
+      page,
+      "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=%2Fm%2F09gbxjr,%2Fm%2F0dsbpg6,%2Fm%2F0jgqg,%2Fm%2F01t6b"
+    );
+    return [
+      { label: "golang", value: values[0] },
+      { label: "rust", value: values[1] },
+      { label: "c++", value: values[2] },
+      { label: "c", value: values[3] }
+    ];
   }
 
-  async getJobLanguagesTrend() {
+  async getJobLanguagesTrend(page) {
     logger.info("getJobLanguagesTrend");
-    try {
-      const res = await axios.get(
-        "https://trends.google.com/trends/api/widgetdata/multiline?hl=sv&tz=-60&req=%7B%22time%22:%222018-12-10+2019-01-10%22,%22resolution%22:%22DAY%22,%22locale%22:%22sv%22,%22comparisonItem%22:%5B%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F07sbkfb%22%7D%5D%7D%7D,%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F07657k%22%7D%5D%7D%7D,%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F05z1_%22%7D%5D%7D%7D,%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F060kv%22%7D%5D%7D%7D,%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F02p97%22%7D%5D%7D%7D%5D,%22requestOptions%22:%7B%22property%22:%22%22,%22backend%22:%22IZG%22,%22category%22:31%7D%7D&token=APP6_UEAAAAAXDjazf2TDDcwoBBQ_WjQ6CKqTOlVrZ29&tz=-60"
-      );
-      const values = this._parseResponse(res.data);
-      return [
-        { label: "java", value: values[0] },
-        { label: "c#", value: values[1] },
-        { label: "python", value: values[2] },
-        { label: "php", value: values[3] },
-        { label: "javascript", value: values[4] }
-      ];
-    } catch (error) {
-      logger.error(error.stack);
-    }
+    const values = await this._makeRequest(
+      page,
+      "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=java,%2Fm%2F07657k,%2Fm%2F05z1_,%2Fm%2F060kv,%2Fm%2F02p97"
+    );
+    return [
+      { label: "java", value: values[0] },
+      { label: "c#", value: values[1] },
+      { label: "python", value: values[2] },
+      { label: "php", value: values[3] },
+      { label: "javascript", value: values[4] }
+    ];
   }
 
-  async getCoolLanguagesTrend() {
+  async getCoolLanguagesTrend(page) {
     logger.info("getCoolLanguagesTrend");
-    try {
-      const res = await axios.get(
-        "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=%2Fm%2F09gbxjr,%2Fm%2F0dsbpg6,%2Fm%2F0bbxf89,%2Fm%2F0pl075p"
-      );
-      const values = this._parseResponse(res.data);
-      return [
-        { label: "golang", value: values[0] },
-        { label: "rust", value: values[1] },
-        { label: "node", value: values[2] },
-        { label: "elixir", value: values[3] }
-      ];
-    } catch (error) {
-      logger.error(error.stack);
-    }
+    const values = await this._makeRequest(
+      page,
+      "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=%2Fm%2F09gbxjr,%2Fm%2F0dsbpg6,%2Fm%2F0bbxf89,%2Fm%2F0pl075p"
+    );
+    return [
+      { label: "golang", value: values[0] },
+      { label: "rust", value: values[1] },
+      { label: "node", value: values[2] },
+      { label: "elixir", value: values[3] }
+    ];
   }
 
-  async getSpaTrend() {
+  async getSpaTrend(page) {
     logger.info("getSpaTrend");
+    const values = await this._makeRequest(
+      page,
+      "https://trends.google.com/trends/explore?cat=31&date=today%201-m&geo=US&q=%2Fm%2F012l1vxv,%2Fm%2F0j45p7w,%2Fg%2F11c0vmgx5d"
+    );
+    return [
+      { label: "react", value: values[0] },
+      { label: "angular", value: values[1] },
+      { label: "vue", value: values[2] }
+    ];
+  }
+
+  async _makeRequest(page, url) {
     try {
-      const res = await axios.get(
-        "https://trends.google.com/trends/api/widgetdata/multiline?hl=sv&tz=-60&req=%7B%22time%22:%222018-12-10+2019-01-10%22,%22resolution%22:%22DAY%22,%22locale%22:%22sv%22,%22comparisonItem%22:%5B%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F012l1vxv%22%7D%5D%7D%7D,%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fm%2F0j45p7w%22%7D%5D%7D%7D,%7B%22geo%22:%7B%7D,%22complexKeywordsRestriction%22:%7B%22keyword%22:%5B%7B%22type%22:%22ENTITY%22,%22value%22:%22%2Fg%2F11c0vmgx5d%22%7D%5D%7D%7D%5D,%22requestOptions%22:%7B%22property%22:%22%22,%22backend%22:%22IZG%22,%22category%22:31%7D%7D&token=APP6_UEAAAAAXDjZM4bCWY7loJBV474e0qD1CmyyUy0V&tz=-60"
+      await page.goto(url);
+      const response = await page.waitForResponse(req =>
+        req.url().includes("multiline")
       );
-      const values = this._parseResponse(res.data);
-      return [
-        { label: "react", value: values[0] },
-        { label: "angular", value: values[1] },
-        { label: "vue", value: values[2] }
-      ];
+      const text = await response.text();
+      const values = this._parseResponse(text);
+      return values;
     } catch (error) {
       logger.error(error.stack);
+      return [];
     }
   }
 

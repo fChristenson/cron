@@ -3,14 +3,14 @@ kind: CronJob
 metadata:
   name: cron-job-stats
 spec:
-  schedule: "0 */1 * * *"
+  schedule: "0 */6 * * *"
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: Never
           containers:
-          - name: cron-job-trends
+          - name: cron-job-google-trends
             image: alpine
             command: ["wget", "http://cron-svc/google-trends"]
           - name: cron-job-github
