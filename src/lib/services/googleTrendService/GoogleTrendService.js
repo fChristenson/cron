@@ -1,6 +1,6 @@
-const puppeteer = require("puppeteer");
 const logger = require("../../logging/logger");
 const client = require("prom-client");
+const googleTrends = require("google-trends-api");
 
 const googleTrendGauge = new client.Gauge({
   name: "google_trend_gauge",
@@ -12,18 +12,11 @@ class GoogleTrendService {
   async getTrends() {
     logger.info("getTrends");
 
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox"]
-    });
-    const page = await browser.newPage();
-
-    const lowLevelTrend = await this.getLowLevelTrend(page);
-    const jobLanguagesTrend = await this.getJobLanguagesTrend(page);
-    const spaTrend = await this.getSpaTrend(page);
-    const coolLanguagesTrend = await this.getCoolLanguagesTrend(page);
-    const programmingStyleTrend = await this.getProgrammingStyleTrend(page);
-
-    await browser.close();
+    const lowLevelTrend = await this.getLowLevelTrend();
+    const jobLanguagesTrend = await this.getJobLanguagesTrend();
+    const spaTrend = await this.getSpaTrend();
+    const coolLanguagesTrend = await this.getCoolLanguagesTrend();
+    const programmingStyleTrend = await this.getProgrammingStyleTrend();
 
     lowLevelTrend.forEach(record =>
       googleTrendGauge.set(
@@ -63,12 +56,13 @@ class GoogleTrendService {
     return trends;
   }
 
-  async getProgrammingStyleTrend(page) {
+  async getProgrammingStyleTrend() {
     logger.info("getProgrammingStyleTrend");
-    const values = await this._makeRequest(
-      page,
-      "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=%2Fm%2F05prj,%2Fm%2F02ykw,%2Fm%2F05yd5"
-    );
+    const values = await this._makeRequest([
+      "Object oriented programming",
+      "Functional programming",
+      "Procedural programming"
+    ]);
     return [
       { label: "object_oriented_programming", value: values[0] },
       { label: "functional_programming", value: values[1] },
@@ -76,12 +70,9 @@ class GoogleTrendService {
     ];
   }
 
-  async getLowLevelTrend(page) {
+  async getLowLevelTrend() {
     logger.info("getLowLevelTrend");
-    const values = await this._makeRequest(
-      page,
-      "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=%2Fm%2F09gbxjr,%2Fm%2F0dsbpg6,%2Fm%2F0jgqg,%2Fm%2F01t6b"
-    );
+    const values = await this._makeRequest(["golang", "rust", "c++", "c"]);
     return [
       { label: "golang", value: values[0] },
       { label: "rust", value: values[1] },
@@ -90,12 +81,15 @@ class GoogleTrendService {
     ];
   }
 
-  async getJobLanguagesTrend(page) {
+  async getJobLanguagesTrend() {
     logger.info("getJobLanguagesTrend");
-    const values = await this._makeRequest(
-      page,
-      "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=java,%2Fm%2F07657k,%2Fm%2F05z1_,%2Fm%2F060kv,%2Fm%2F02p97"
-    );
+    const values = await this._makeRequest([
+      "java",
+      "c#",
+      "python",
+      "php",
+      "javascript"
+    ]);
     return [
       { label: "java", value: values[0] },
       { label: "c#", value: values[1] },
@@ -105,12 +99,14 @@ class GoogleTrendService {
     ];
   }
 
-  async getCoolLanguagesTrend(page) {
+  async getCoolLanguagesTrend() {
     logger.info("getCoolLanguagesTrend");
-    const values = await this._makeRequest(
-      page,
-      "https://trends.google.com/trends/explore?cat=31&date=today%201-m&q=%2Fm%2F09gbxjr,%2Fm%2F0dsbpg6,%2Fm%2F0bbxf89,%2Fm%2F0pl075p"
-    );
+    const values = await this._makeRequest([
+      "golang",
+      "rust",
+      "node",
+      "elixir"
+    ]);
     return [
       { label: "golang", value: values[0] },
       { label: "rust", value: values[1] },
@@ -119,12 +115,9 @@ class GoogleTrendService {
     ];
   }
 
-  async getSpaTrend(page) {
+  async getSpaTrend() {
     logger.info("getSpaTrend");
-    const values = await this._makeRequest(
-      page,
-      "https://trends.google.com/trends/explore?cat=31&date=today%201-m&geo=US&q=%2Fm%2F012l1vxv,%2Fm%2F0j45p7w,%2Fg%2F11c0vmgx5d"
-    );
+    const values = await this._makeRequest(["react", "angular", "vue"]);
     return [
       { label: "react", value: values[0] },
       { label: "angular", value: values[1] },
@@ -132,24 +125,17 @@ class GoogleTrendService {
     ];
   }
 
-  async _makeRequest(page, url) {
+  async _makeRequest(keyword) {
     try {
-      await page.goto(url);
-      const response = await page.waitForResponse(req =>
-        req.url().includes("multiline")
-      );
-      const text = await response.text();
-      const values = this._parseResponse(text);
-      return values;
+      const response = await googleTrends.interestOverTime({
+        keyword,
+        category: 730 // Development Tools: 730
+      });
+      return JSON.parse(response).default.averages;
     } catch (error) {
       logger.error(error.stack);
       return [];
     }
-  }
-
-  _parseResponse(str) {
-    const jsonStr = str.slice(str.indexOf("{"));
-    return JSON.parse(jsonStr).default.averages;
   }
 }
 
