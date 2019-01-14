@@ -53,7 +53,12 @@ class GoogleTrendService {
       );
     });
 
-    return trends;
+    return {
+      lowLevelTrend,
+      jobLanguagesTrend,
+      spaTrend,
+      programmingStyleTrend
+    };
   }
 
   async getProgrammingStyleTrend() {
