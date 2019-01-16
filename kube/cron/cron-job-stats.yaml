@@ -10,9 +10,6 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-          - name: cron-job-google-trends
-            image: alpine
-            command: ["wget", "http://cron-svc/google-trends"]
           - name: cron-job-github
             image: alpine
             command: ["wget", "http://cron-svc/github"]
